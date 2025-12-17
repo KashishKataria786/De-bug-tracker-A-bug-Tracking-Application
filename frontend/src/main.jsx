@@ -6,6 +6,7 @@ import {BrowserRouter} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import No_Internet from './components/ui/NoInternet.jsx'
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>

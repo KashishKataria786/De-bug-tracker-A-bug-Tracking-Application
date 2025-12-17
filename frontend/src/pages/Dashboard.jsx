@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout/Layout.jsx";
-import AnimatedModal from "../components/ui/AnimatedModal.jsx";
-import CreateBugComponent from "../components/ui/CreateBugComponent.jsx";
 import BugTable from "../components/ui/BugTable.jsx";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
 import severityLevels from "../utils/SeverityLevels.js";
 import progressStages from "../utils/ProgressLevels.js";
 import axios from "axios";
+
+const AnimatedModal = lazy(() => import("../components/ui/AnimatedModal.jsx"));
+const CreateBugComponent = lazy(() =>
+  import("../components/ui/CreateBugComponent.jsx")
+);
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -20,25 +23,23 @@ const Dashboard = () => {
   const [selectedReporter, setSelectedReporter] = useState("");
   const [dateRange, setDateRange] = useState("all");
 
-  const fetchData = async() => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-
-      const params= new URLSearchParams();
-      if(selectedSeverities.length >0 ){
-        params.append("severity",selectedSeverities.join(','));
+      const params = new URLSearchParams();
+      if (selectedSeverities.length > 0) {
+        params.append("severity", selectedSeverities.join(","));
       }
-      if(selectedProgress.length >0){
-        params.append("progress",selectedProgress.join(','));
+      if (selectedProgress.length > 0) {
+        params.append("progress", selectedProgress.join(","));
       }
-      if(selectedReporter){
-        params.append('reporter', selectedReporter);
+      if (selectedReporter) {
+        params.append("reporter", selectedReporter);
       }
 
       const bugs = await axios.get(`${BASE_URL}/get-bugs?${params.toString()}`);
       console.log(bugs);
       setData(bugs?.data?.data);
-
     } catch (error) {
       toast.error("Not able to Get Data");
 
@@ -50,7 +51,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedProgress,selectedReporter,selectedSeverities]);
+  }, [selectedProgress, selectedReporter, selectedSeverities]);
 
   const uniqueReporters = useMemo(() => {
     return [...new Set(data.map((bug) => bug.reporterName))];
@@ -90,7 +91,17 @@ const Dashboard = () => {
     });
   }, [data, selectedSeverities, selectedProgress, selectedReporter, dateRange]);
 
-  if (loading) return <Layout className='w-screen  h-screen bg-white flex items-center justify-center'><LoadingSpinner /></Layout>
+  const preloadCreateBug = () => {
+    import("../components/ui/AnimatedModal.jsx");
+    import("../components/ui/CreateBugComponent.jsx");
+  };
+
+  if (loading)
+    return (
+      <Layout className="w-screen  h-screen bg-white flex items-center justify-center">
+        <LoadingSpinner />
+      </Layout>
+    );
 
   return (
     <>
@@ -101,6 +112,7 @@ const Dashboard = () => {
             <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
 
             <button
+              onMouseEnter={preloadCreateBug}
               onClick={() => setOpenCreateBugModal(true)}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 transition"
             >
@@ -208,31 +220,35 @@ const Dashboard = () => {
           </div>
 
           {/* Table */}
-          {loading ? (
-            <div className="rounded-xl border border-gray-200 bg-white py-14 text-center text-sm text-gray-500">
-              <LoadingSpinner />
-            </div>
-          ) : (
-            <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-              <BugTable bugs={filteredBugs} fetchData={fetchData} />
-            </div>
-          )}
+          <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+            <BugTable bugs={filteredBugs} fetchData={fetchData} />
+          </div>
         </div>
       </Layout>
 
       {/* Create Bug Modal */}
-      <AnimatedModal
-        isOpen={openCreateBugModal}
-        onClose={() => setOpenCreateBugModal(false)}
-        title="Create a New Bug"
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30">
+            <LoadingSpinner />
+          </div>
+        }
       >
-        <CreateBugComponent
-          isCreated={() => {
-            setOpenCreateBugModal(false);
-            fetchData();
-          }}
-        />
-      </AnimatedModal>
+        {openCreateBugModal && (
+          <AnimatedModal
+            isOpen={openCreateBugModal}
+            onClose={() => setOpenCreateBugModal(false)}
+            title="Create a New Bug"
+          >
+            <CreateBugComponent
+              isCreated={() => {
+                setOpenCreateBugModal(false);
+                fetchData();
+              }}
+            />
+          </AnimatedModal>
+        )}
+      </Suspense>
     </>
   );
 };

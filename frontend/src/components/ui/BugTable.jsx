@@ -1,7 +1,9 @@
-import {useState} from 'react'
-import AnimatedModal from "./AnimatedModal";
-import UpdateBugComponent from "./UpdateBugComponent.jsx";
-import DeleteBug from "./DeleteBug.jsx";
+import {lazy, Suspense ,useState} from 'react'
+import LoadingSpinner from './LoadingSpinner.jsx';
+const AnimatedModal = lazy(()=>import('./AnimatedModal.jsx'));
+const UpdateBugComponent = lazy(()=>import('./UpdateBugComponent.jsx'));
+const DeleteBug = lazy(()=>import('./DeleteBug.jsx'));
+
 
 const severityStyles = {
   Critical: "bg-red-50 text-red-700 ring-red-600 ",
@@ -140,7 +142,15 @@ const BugTable = ({ bugs = [] ,fetchData}) => {
       </div>
 
       {/* Update Modal */}
-      <AnimatedModal
+
+      <Suspense
+              fallback={
+                <div className="fixed inset-0 flex items-center justify-center bg-black/30">
+                  <LoadingSpinner />
+                </div>
+              }
+            >
+      {openUpdateModal&&<AnimatedModal
         isOpen={openUpdateModal}
         onClose={() => setOpenUpdateModal(false)}
         title="Update Bug Progress"
@@ -148,10 +158,21 @@ const BugTable = ({ bugs = [] ,fetchData}) => {
       >
         <UpdateBugComponent data={dataToUpdate} onUpdated={()=>{setOpenUpdateModal(false); fetchData()}}/>
 
-      </AnimatedModal>
-      <AnimatedModal isOpen={openDeleteModal} onClose={()=>setOpenDeleteModal(false)} title={"Delete Bug"}>
+      </AnimatedModal>}
+      </Suspense>
+      <Suspense
+              fallback={
+                <div className="fixed inset-0 flex items-center justify-center bg-black/30">
+                  <LoadingSpinner />
+                </div>
+              }
+            >
+      {
+        openDeleteModal&&<AnimatedModal isOpen={openDeleteModal} onClose={()=>setOpenDeleteModal(false)} title={"Delete Bug"}>
         <DeleteBug id={idToDelete}  onDeleted={()=>{setOpenDeleteModal(false) ;fetchData()}} onClose={()=>setOpenDeleteModal(false)} />
       </AnimatedModal>
+      }
+      </Suspense>
     </>
   );
 };
