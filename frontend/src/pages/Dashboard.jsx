@@ -20,10 +20,22 @@ const Dashboard = () => {
   const [selectedReporter, setSelectedReporter] = useState("");
   const [dateRange, setDateRange] = useState("all");
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     setLoading(true);
     try {
-      const bugs = await axios.get(`${BASE_URL}/get-bugs`);
+
+      const params= new URLSearchParams();
+      if(selectedSeverities.length >0 ){
+        params.append("severity",selectedSeverities.join(','));
+      }
+      if(selectedProgress.length >0){
+        params.append("progress",selectedProgress.join(','));
+      }
+      if(selectedReporter){
+        params.append('reporter', selectedReporter);
+      }
+
+      const bugs = await axios.get(`${BASE_URL}/get-bugs?${params.toString()}`);
       console.log(bugs);
       setData(bugs?.data?.data);
 
@@ -38,7 +50,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedProgress,selectedReporter,selectedSeverities]);
 
   const uniqueReporters = useMemo(() => {
     return [...new Set(data.map((bug) => bug.reporterName))];

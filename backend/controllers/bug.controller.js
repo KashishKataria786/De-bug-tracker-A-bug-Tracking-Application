@@ -2,8 +2,6 @@ import BugModel  from "../models/bug.model.js";
 import progressStages from '../utils/ProgressLevels.js'
 import severityLevels from '../utils/SeverityLevels.js'
 
-
-
 export const createBug = async (req, res) => {
   try {
     const {
@@ -275,3 +273,51 @@ export const updateBug = async (req, res) => {
   }
 };
 
+
+export const filterAllbugs= async(req,res)=>{
+  const {severity, progress, reporter}= req.query;
+  try{
+    const filter ={}
+
+    if(severity){
+      const severityArray = Array.isArray(severity) ? severity :
+      severity.split(',');
+
+      filter.severity= {$in:severityArray};
+    }
+
+    if(progress){
+      const progressArray = Array.isArray(progress) ? progress :
+      progress.split(',');
+      filter.progress = {$in:progressArray}
+    }
+
+    if(reporter){
+      filter.reporterName=reporter;
+    }
+
+    const allbugs = await BugModel.find(filter).sort({created:-1}).lean();
+
+    return res.status(200).json({
+      success: true,
+      count: allbugs.length,
+      data: allbugs,
+    });
+
+
+  }catch(error){
+    console.error("Bug Error:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}
