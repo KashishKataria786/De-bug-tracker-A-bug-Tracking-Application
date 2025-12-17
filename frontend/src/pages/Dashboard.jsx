@@ -3,15 +3,14 @@ import Layout from "../components/Layout/Layout.jsx";
 import AnimatedModal from "../components/ui/AnimatedModal.jsx";
 import CreateBugComponent from "../components/ui/CreateBugComponent.jsx";
 import BugTable from "../components/ui/BugTable.jsx";
-import {toast }from 'react-toastify'
-
-import MockData from "../utils/MockData.js";
+import { toast } from "react-toastify";
+import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
 import severityLevels from "../utils/SeverityLevels.js";
 import progressStages from "../utils/ProgressLevels.js";
 import axios from "axios";
 
 const Dashboard = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [openCreateBugModal, setOpenCreateBugModal] = useState(false);
   const BASE_URL = import.meta.env.VITE_BASE_BACKEND;
@@ -19,28 +18,27 @@ const Dashboard = () => {
   const [selectedSeverities, setSelectedSeverities] = useState([]);
   const [selectedProgress, setSelectedProgress] = useState([]);
   const [selectedReporter, setSelectedReporter] = useState("");
-  const [dateRange, setDateRange] = useState("all")
+  const [dateRange, setDateRange] = useState("all");
 
-
-  const fetchData = async()=>{
-    try{
-      const bugs = await axios.get(`${BASE_URL}/get-bugs`)
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const bugs = await axios.get(`${BASE_URL}/get-bugs`);
       console.log(bugs);
-      setData(bugs?.data?.data)
-    }catch(error){
+      setData(bugs?.data?.data);
+
+    } catch (error) {
       toast.error("Not able to Get Data");
+
       return;
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    setLoading(true);
-      fetchData();
-      setLoading(false);
-   
+    fetchData();
   }, []);
-
-
 
   const uniqueReporters = useMemo(() => {
     return [...new Set(data.map((bug) => bug.reporterName))];
@@ -78,14 +76,9 @@ const Dashboard = () => {
 
       return severityMatch && progressMatch && reporterMatch && dateMatch;
     });
-  }, [
-    data,
-    selectedSeverities,
-    selectedProgress,
-    selectedReporter,
-    dateRange,
-  ]);
+  }, [data, selectedSeverities, selectedProgress, selectedReporter, dateRange]);
 
+  if (loading) return <Layout className='w-screen  h-screen bg-white flex items-center justify-center'><LoadingSpinner /></Layout>
 
   return (
     <>
@@ -93,9 +86,7 @@ const Dashboard = () => {
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">
-              Dashboard
-            </h1>
+            <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
 
             <button
               onClick={() => setOpenCreateBugModal(true)}
@@ -207,7 +198,7 @@ const Dashboard = () => {
           {/* Table */}
           {loading ? (
             <div className="rounded-xl border border-gray-200 bg-white py-14 text-center text-sm text-gray-500">
-              Loading bugs...
+              <LoadingSpinner />
             </div>
           ) : (
             <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
@@ -223,7 +214,12 @@ const Dashboard = () => {
         onClose={() => setOpenCreateBugModal(false)}
         title="Create a New Bug"
       >
-        <CreateBugComponent isCreated={()=>{setOpenCreateBugModal(false) ; fetchData()}} />
+        <CreateBugComponent
+          isCreated={() => {
+            setOpenCreateBugModal(false);
+            fetchData();
+          }}
+        />
       </AnimatedModal>
     </>
   );
