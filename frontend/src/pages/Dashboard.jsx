@@ -96,13 +96,6 @@ const Dashboard = () => {
     import("../components/ui/CreateBugComponent.jsx");
   };
 
-  if (loading)
-    return (
-      <Layout className="w-screen  h-screen bg-white flex items-center justify-center">
-        <LoadingSpinner />
-      </Layout>
-    );
-
   return (
     <>
       <Layout>
