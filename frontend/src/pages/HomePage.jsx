@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import Layout from "../components/Layout/Layout";
+import NormalLayout from "../components/Layout/NormalLayout.jsx";
 import {Link} from 'react-router-dom'
 export default function HomePage() {
   return (
-    <Layout>
+    <NormalLayout>
     <section className="h-[90vh] w-screen flex items-center justify-center bg-white px-6">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -39,7 +39,7 @@ export default function HomePage() {
         </div>
       </motion.div>
     </section>
-    </Layout>
+    </NormalLayout>
   );
 }
 

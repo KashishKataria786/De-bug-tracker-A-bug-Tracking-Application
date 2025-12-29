@@ -214,7 +214,7 @@ const Dashboard = () => {
 
           {/* Table */}
           <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-            <BugTable bugs={filteredBugs} fetchData={fetchData} />
+            {loading ? <LoadingSpinner/>:<BugTable bugs={filteredBugs} fetchData={fetchData} />}
           </div>
         </div>
       </Layout>
@@ -241,6 +241,8 @@ const Dashboard = () => {
             />
           </AnimatedModal>
         )}
+
+
       </Suspense>
     </>
   );

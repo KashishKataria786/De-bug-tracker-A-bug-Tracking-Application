@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { IoCloseSharp } from "react-icons/io5";
-export default function AnimatedModal({ isOpen, onClose, title, children }) {
+export default function AnimatedModal({ isOpen, onClose, title, children ,width='max-w-lg'}) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -24,7 +24,7 @@ export default function AnimatedModal({ isOpen, onClose, title, children }) {
             className="fixed inset-0 z-50 flex items-center justify-center px-4"
           >
             <div
-              className="w-full max-w-lg rounded-2xl bg-white shadow-xl"
+              className={`w-full ${width} rounded-2xl bg-white shadow-xl`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}

@@ -19,9 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(bodyParser.json());
 
-// database connection
-await connectDatabase();
-
 app.get("/", (req, res) =>
   res.send("<h1>Hello from Bug Tracker Application Backend</h1>")
 );
@@ -29,6 +26,7 @@ app.get("/", (req, res) =>
 app.use('/api/bug', bugRouter);
 
 const PORT = process.env.PORT || 5050;
+await connectDatabase();
 
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {

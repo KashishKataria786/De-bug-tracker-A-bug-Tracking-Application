@@ -14,29 +14,6 @@ export default function Header() {
           </NavLink>
         </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          {[
-            { name: "Dashboard", path: "/dashboard" },
-            { name: "Analytics", path: "/analytics" },
-          ].map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              className={({ isActive }) =>
-                `relative transition ${
-                  isActive
-                    ? "text-blue-600"
-                    : "text-gray-600 hover:text-gray-900"
-                }`
-              }
-            >
-              {item.name}
-              <span className="absolute -bottom-1 left-0 h-0.5 w-full scale-x-0 bg-blue-600 transition-transform origin-left group-hover:scale-x-100" />
-            </NavLink>
-          ))}
-        </nav>
-
         {/* Action */}
         <Link
           to="/dashboard"
