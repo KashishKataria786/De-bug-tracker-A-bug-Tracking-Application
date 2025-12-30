@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, BarChart3, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, BarChart3,BarChart2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(() => {
@@ -65,6 +65,19 @@ const Sidebar = () => {
         >
           <BarChart3 size={18} />
           {isOpen && <span>Analytics</span>}
+        </NavLink>
+        <NavLink
+          to="/kanban"
+          className={({ isActive }) =>
+            `${baseClass} ${
+              isActive
+                ? "bg-blue-100 text-blue-700"
+                : "text-gray-700 hover:bg-gray-100"
+            }`
+          }
+        >
+          <BarChart2 size={18} />
+          {isOpen && <span>Kanban Board</span>}
         </NavLink>
       </nav>
     </aside>

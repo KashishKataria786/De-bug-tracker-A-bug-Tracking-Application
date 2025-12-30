@@ -7,6 +7,8 @@ const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
+const KanbanPage= lazy(()=>import('./pages/KanbanPage.jsx'));
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path ='/kanban' element={<KanbanPage/>}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
