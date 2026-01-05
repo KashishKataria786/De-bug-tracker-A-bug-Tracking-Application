@@ -1,16 +1,27 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import LoadingSpinner from "./components/ui/LoadingSpinner.jsx";
-import { lazy, Suspense } from "react";
+import { useEffect ,useState,lazy, Suspense } from "react";
 
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
 const KanbanPage= lazy(()=>import('./pages/KanbanPage.jsx'));
-
+const NotResponsive = lazy(()=>import('./components/ui/NotResponsive.jsx'));
 
 function App() {
+  const [screenWidth,setScreenWidth] = useState(window.innerWidth);
+  useEffect(()=>{
+  function handleResize (){
+    setScreenWidth(window.innerWidth);
+  }
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+  },[])
+
+  if(screenWidth < 768)return <NotResponsive/>
+  
   return (
     <>
       <Suspense
