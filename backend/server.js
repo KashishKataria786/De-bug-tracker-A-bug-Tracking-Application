@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import colors from "colors";
 import connectDatabase from "./config/db.js";
 import bugRouter from "./routes/bug.routes.js";
+import authRouter from './routes/auth.routes.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) =>
   res.send("<h1>Hello from Bug Tracker Application Backend</h1>")
 );
 
+app.use('/api/auth', authRouter);
 app.use('/api/bug', bugRouter);
 
 const PORT = process.env.PORT || 5050;

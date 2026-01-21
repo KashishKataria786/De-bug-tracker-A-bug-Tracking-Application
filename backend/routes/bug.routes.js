@@ -8,11 +8,12 @@ import {
   updateBug,
   filterAllbugs
 } from "../controllers/bug.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const bugRouter = express.Router();
 
 bugRouter.post("/create-bug", createBug);
-bugRouter.get("/get-bugs", filterAllbugs);
+bugRouter.get("/get-bugs",authMiddleware, filterAllbugs);
 bugRouter.delete('/delete/:id', deleteBug);
 bugRouter.get('/pie-chart-analytics', PiChartAnalytics);
 bugRouter.patch('/update-bug/:id', updateBug);
