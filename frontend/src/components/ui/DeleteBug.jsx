@@ -11,7 +11,11 @@ const DeleteBug = ({ id, onClose, onDeleted }) => {
 
     setLoading(true);
     try {
-      await axios.delete(`${BASE_URL}/delete/${id}`);
+      await axios.delete(`${BASE_URL}/delete/${id}`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
 
       toast.success("Bug deleted successfully");
 

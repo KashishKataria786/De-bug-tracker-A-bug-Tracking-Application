@@ -42,7 +42,11 @@ const CreateBugComponent = ({isCreated}) => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/create-bug`, {
+      const response = await axios.post(`${BASE_URL}/create-bug`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+}, {
         ...formData,
         estimatedFixTimeHours: Number(estimatedFixTimeHours),
       });

@@ -37,7 +37,11 @@ const Dashboard = () => {
         params.append("reporter", selectedReporter);
       }
 
-      const bugs = await axios.get(`${BASE_URL}/get-bugs?${params.toString()}`);
+      const bugs = await axios.get(`${BASE_URL}/get-bugs?${params.toString()}`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
       console.log(bugs);
       setData(bugs?.data?.data);
     } catch (error) {

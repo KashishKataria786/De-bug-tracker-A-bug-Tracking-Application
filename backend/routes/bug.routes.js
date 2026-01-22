@@ -13,10 +13,10 @@ import authMiddleware from "../middleware/auth.middleware.js";
 const bugRouter = express.Router();
 
 bugRouter.post("/create-bug", createBug);
-bugRouter.get("/get-bugs", filterAllbugs);
-bugRouter.delete('/delete/:id', deleteBug);
-bugRouter.get('/pie-chart-analytics', PiChartAnalytics);
-bugRouter.patch('/update-bug/:id', updateBug);
-bugRouter.patch("/change-progress/:id", changeProgressOfBug);
+bugRouter.get("/get-bugs",authMiddleware, filterAllbugs);
+bugRouter.delete('/delete/:id',authMiddleware, deleteBug);
+bugRouter.get('/pie-chart-analytics',authMiddleware, PiChartAnalytics);
+bugRouter.patch('/update-bug/:id',authMiddleware, updateBug);
+bugRouter.patch("/change-progress/:id",authMiddleware, changeProgressOfBug);
 
 export default bugRouter;

@@ -18,7 +18,11 @@ const AnalyticsPage = () => {
   const fetchPieAnalytics = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/pie-chart-analytics`);
+      const res = await axios.get(`${BASE_URL}/pie-chart-analytics`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
       const { labels, data } = res.data.data;
 
       const formatted = labels.map((label, index) => ({

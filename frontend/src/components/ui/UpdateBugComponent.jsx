@@ -39,7 +39,11 @@ const UpdateBugComponent = ({ data, onUpdated }) => {
     }
     const id = data._id;
     try {
-      const response = await axios.patch(`${BASE_URL}/update-bug/${id}`, {
+      const response = await axios.patch(`${BASE_URL}/update-bug/${id}`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  }
+} ,{
         ...formData,
         estimatedFixTimeHours: Number(estimatedFixTimeHours),
       });

@@ -51,7 +51,11 @@ export default function KanbanPage() {
     try {
       await axios.patch(`${BASE_URL}/change-progress/${active.id}`, {
         progress: over.id,
-      });
+      },{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+},);
       toast.success(`Bug status changed to ${over.id}`);
     } catch (error) {
       console.error("Error updating bug status:", error);
@@ -62,7 +66,11 @@ export default function KanbanPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const bugs = await axios.get(`${BASE_URL}/get-bugs`);
+      const bugs = await axios.get(`${BASE_URL}/get-bugs`,{
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
       setTasks(bugs?.data?.data);
     } catch (error) {
       toast.error("Not able to Get Data");
@@ -94,10 +102,10 @@ export default function KanbanPage() {
           >
             <Suspense fallback={<LoadingSpinner/>}>
             <div className="flex gap-6 w-max">
-              {COLUMNS.map((column) => (
+              {COLUMNS.map((column,index) => (
                 
                     <Column
-                  key={column}
+                  key={index}
                   id={column}
                   title={column.toUpperCase()}
                   tasks={tasks.filter((t) => t.progress === column)}
